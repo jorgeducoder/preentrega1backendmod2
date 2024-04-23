@@ -38,7 +38,7 @@ socket.on("products", (data) => {
 
 function createTableRow(product) {
   
-  // Funcion que crea la tabla con las lineas de cada producto
+  // Funcion que crea la tabla con las lineas de cada producto. El cabezal esta definido en el handlebar
   
   const row = document.createElement("tr");
   row.innerHTML = `
@@ -49,6 +49,7 @@ function createTableRow(product) {
     <td>${product.category}</td>
     <td>${product.stock}</td>
     <td>${product.status}</td>
+    <td>${product.code}</td>
     <td><img src="${product.thumbnails}" alt="Thumbnail" class="thumbnail" style="width: 75px;"></td>
     <td><button class="btn btn-effect btn-dark btn-jif bg-black" onClick="deleteProduct('${product._id}')">Eliminar</button></td>
   `;
@@ -65,7 +66,42 @@ function deleteProduct(productId) {
   socket.emit("delete", productId);
 }
 
+// Solo se hace el add por socket, soluciona que guardaba dos registros y no uno por cada ADD
+
 form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+ // const imageBase64 = event.target.result; El event da indefinido
+
+  const fileInput = document.getElementById("thumbnails");
+  const file = fileInput.files[0];
+
+  console.log("thumbnails1: ", fileInput); // guarda el objeto del DOM
+  console.log("thumbnails2: ", fileInput.files[0]); //Objeto con el nombre del archivo, fecha ult mod, path relativo para la web, tamaño y type image/jpeg
+  console.log("thumbnails3: ", file); // idem
+  
+  const productData = {
+    title: document.getElementById("title").value,
+    portions: parseInt(document.getElementById("porciones").value),
+    description: document.getElementById("description").value,
+    thumbnails: file,
+    //thumbnails: document.getElementById("thumbnails"),
+    stock: parseInt(document.getElementById("stock").value),
+    price: parseInt(document.getElementById("price").value),
+    category: document.getElementById("category").value,
+    code: document.getElementById("code").value,
+    status: true
+  };
+  console.log("antes de enviar emit:", productData)
+  socket.emit("add", productData);
+  form.reset();
+  imagePreview.innerHTML = "";
+});
+
+// Quito todo el add de desafio 4 porque ya no utilizo el POST
+
+
+/*form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const precio = parseFloat(document.getElementById("price").value);
@@ -126,7 +162,7 @@ form.addEventListener("submit", async (event) => {
 
   form.reset();
   imagePreview.innerHTML = "";
-});
+});*/
 
 function previewImage() {
   const fileInput = document.getElementById("thumbnails");

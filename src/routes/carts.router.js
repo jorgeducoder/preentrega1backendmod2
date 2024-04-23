@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { CartManager } from "../dao/CartManager.js";
-import { ProductManager } from "../dao/productManager.js";
+import { cartManagerMdb } from "../dao/cartManagerMdb.js";
+import { ProductManagerMdb } from "../dao/productManagerMdb.js";
 
 // Define los nuevos objetos CM y PM con los metodos y datos del json
-const CM = new CartManager("./src/cartsaborescaseros.json");
+const CM = new cartManagerMdb;
 
 // La nueva clase PM en principio la necesito para ver si el producto que se ingresa para incorporar la carrito esta en la clase productos
-const PM = new ProductManager("./src/saborescaseros.json");
+const PM = new ProductManagerMdb;
  
 // Define los metodos para el router de usuarios
 const cartsRouter = Router();

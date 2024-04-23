@@ -57,6 +57,8 @@ router.get('/:pid', async (req, res) => {
 
 
 router.post("/", uploader.single("img"), async (req, res) => {
+    // En la practica integradora no usamos el post, solo el socket del server para agregar un producto a MongoDB.
+    
     const { nombre, porciones, recetadesc, stock, price, categoria, status } = req.body;
     // aunque en el form se controla que ingrese valores numericos si vienen undefined se controla de esta manera
     const porcionesNum = parseInt(porciones, 10);

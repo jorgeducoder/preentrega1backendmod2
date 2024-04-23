@@ -1,7 +1,8 @@
 // EJEMPLO DE CLASE
 
 
-// Importante que este archivo este incluido en mi plantilla porque desde aqui vamos a trabajar con socket
+// Importante que este archivo este incluido en mi plantilla porque desde aqui vamos a trabajar con socket.
+// en mi proyecto utilizo realTimepPoductsScript.js
 
 const socket = io();
 // El cliente envia el id (message) y el contenido del mensaje para el servidor en app.js

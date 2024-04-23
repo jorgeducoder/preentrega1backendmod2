@@ -1,4 +1,5 @@
 // Saco el intercambio del socket con el cliente fuera de app. En app tengo que importarlo
+// Cuando pongo a coorer el servidor en APP, se ejecuta io.on 
 
 //import ProductManager from "./dao/productManager.js";
 // Cambio el import al de la DB y cambio en el views para que realtimeproducts vea los de la base 
@@ -8,11 +9,13 @@ export default (io) => {
   const productManager = new ProductManagerMdb();
 
   io.on("connection", handleConnection);
-
+  //  Maneja la conexion y escucha los clientes conectados
   async function handleConnection(socket) {
     console.log(`Nuevo cliente conectado ${socket.id}`);
+    // Publicaa los productos y se pone a escuchar los eventos
     emitProducts(socket);
     
+    // En el endpoint realtimeproducts a traves del viewsrouter correspondiente recibe los emit del add o el delete
     socket.on("add", async (product) => {
       console.log("producto a agregar en socket:", product);
       await addProductAndEmit(product);
@@ -24,9 +27,11 @@ export default (io) => {
     });
   }
 
+  // Emite los productos a los clientes conectados
+  
   async function emitProducts(socket) {
     const productsList = await productManager.getProduct();
-    console.log("Lista de productos con getProduct en socket:", productsList);
+    //console.log("Lista de productos con getProduct en socket:", productsList);
         
     //agrego un pequeño mod para utilizar img por defecto en caso de no tener thumbnail, despues ver si se puede mejorar
     productsList.forEach((product) => {

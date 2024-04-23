@@ -1,0 +1,61 @@
+<!-- HTML de la lista de productos. Llamada desde viewsrouter para renderizar los productos por HTTP en el endpoint /products
+    Ejemplo para mostrar una lista por HTTP con HTML -->
+
+<body>
+  <div class="mx-auto px-4">
+    <div>
+      <h1 class="text-uppercase">Lista de productos en http</h1>
+    </div>
+
+    <div class="form-holder">
+      <table class="table-items">
+        <thead>
+          <tr class="text-uppercase">
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Categoria</th>
+            <th>Estado</th>
+            <th>Stock</th>
+            <th>Código</th>
+            <th>Imagen</th>
+            <th></th>
+
+          </tr>
+        </thead>
+
+        <tbody id="table-body">
+          {{#each productList}}
+          <tr>
+            <td>{{this._id}}</td>
+            <td>{{this.title}}</td>
+            <td>{{this.description}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.category}}</td>
+            <td>{{#if status}} Activo {{else}} Inactivo {{/if}}</td>
+            <td>{{this.stock}}</td>
+            <td>{{this.code}}</td>
+
+            <td>
+              <!--{{#if this.thumbnails.length}}
+              <img src="{{this.thumbnails.[0]}}" alt="Imagen del producto">
+              {{else}}
+              Sin imagen
+              {{/if}}-->
+              <img src="{{this.thumbnails}}" alt="Imagen del producto">
+            </td>
+
+          </tr>
+          {{/each}}
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+</body>
+<!-- En estehandlebars no son ncesarios porque estoy trabajando por HTTP no por socket -->
+<!--<script src="/socket.io/socket.io.js"></script>-->
+<!--<script src="/js/index.js"></script>-->

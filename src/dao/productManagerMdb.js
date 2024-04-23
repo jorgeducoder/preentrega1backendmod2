@@ -7,7 +7,9 @@ class ProductManagerMdb {
 
         try {
             console.log("Producto que llega a addProduct en PMMdbjs: ", producto)
-            const result = await productModel.create({ producto });
+            // aca estaba el problema del undefined, le estaba pasando un objeto de la clase products
+            //const result = await productModel.create({ producto });
+            const result = await productModel.create( producto );
             return result;
 
         } catch (error) {
@@ -71,6 +73,5 @@ class ProductManagerMdb {
     
 }
 //Exporto la clase
-//module.exports = ProductManager;
-// Lo cambio por type module en json
+
 export { ProductManagerMdb };

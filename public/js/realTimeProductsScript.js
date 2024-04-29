@@ -12,8 +12,8 @@ const tableBody = document.getElementById("table-body");
 
 function getProducts() {
   console.log("voy a emitir", products)
-  
-    socket.emit("getProducts", (products) => {
+
+  socket.emit("getProducts", (products) => {
     emptyTable();
     showProducts(products);
   });
@@ -36,7 +36,7 @@ socket.on("products", (data) => {
   showProducts(data);
 });
 
-function createTableRow(product) {
+/*function createTableRow(product) { ANTERIOR A GPT
   
   // Funcion que crea la tabla con las lineas de cada producto. El cabezal esta definido en el handlebar
   
@@ -54,32 +54,47 @@ function createTableRow(product) {
     <td><button class="btn btn-effect btn-dark btn-jif bg-black" onClick="deleteProduct('${product._id}')">Eliminar</button></td>
   `;
   return row;
+}*/
+
+function createTableRow(product) {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${product._id}</td>
+    <td class="text-nowrap">${product.title}</td>
+    <td>${product.description}</td>
+    <td class="text-nowrap">$ ${product.price}</td>
+    <td>${product.category}</td>
+    <td>${product.stock}</td>
+    <td>${product.status}</td>
+    <td>${product.code}</td>
+    <td><a href="${product.thumbnails}" target="_blank">Ver imagen</a></td>  
+    <td><button class="btn btn-effect btn-dark btn-jif bg-black" onClick="deleteProduct('${product._id}')">Eliminar</button></td>
+  `;
+  return row;
 }
+
+// de gpt <a href="/images/${product.imageFilename}" target="_blank">Ver imagen</a></td>  Enlazar a la imagen en el servidor -->*/
 
 function deleteProduct(productId) {
   //const id = parseInt(productId);
   console.log("ID del producto a eliminar en deletePoduct:", productId);
   emptyTable();
-  
+
   // hace el emit para el socket.on en sockets.js
-  
+
   socket.emit("delete", productId);
 }
 
-// Solo se hace el add por socket, soluciona que guardaba dos registros y no uno por cada ADD
 
-form.addEventListener("submit", async (event) => {
+
+/*form.addEventListener("submit", async (event) => { Antes de GPT
   event.preventDefault();
 
  // const imageBase64 = event.target.result; El event da indefinido
 
   const fileInput = document.getElementById("thumbnails");
-  const file = fileInput.files[0];
+  const file = fileInput.files[0];// no esta en gpt
 
-  console.log("thumbnails1: ", fileInput); // guarda el objeto del DOM
-  console.log("thumbnails2: ", fileInput.files[0]); //Objeto con el nombre del archivo, fecha ult mod, path relativo para la web, tamaño y type image/jpeg
-  console.log("thumbnails3: ", file); // idem
-  
   const productData = {
     title: document.getElementById("title").value,
     portions: parseInt(document.getElementById("porciones").value),
@@ -96,74 +111,78 @@ form.addEventListener("submit", async (event) => {
   socket.emit("add", productData);
   form.reset();
   imagePreview.innerHTML = "";
+});*/
+// HACIA ARRIBA YA ESTABA
+
+
+// Agregar un event listener para el evento "addProductSuccess" emitido desde el servidor
+socket.on("addProductSuccess", () => {
+  // Restablecer el formulario después de que se confirme que el producto se ha agregado correctamente
+  form.reset();
 });
 
-// Quito todo el add de desafio 4 porque ya no utilizo el POST
-
-
-/*form.addEventListener("submit", async (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const precio = parseFloat(document.getElementById("price").value);
-  const stock = parseInt(document.getElementById("stock").value);
-  const porciones = parseInt(document.getElementById("porciones").value);
   const fileInput = document.getElementById("thumbnails");
-  const file = fileInput.files[0];
+  const imageFile = fileInput.files[0];
 
-  const formData = new FormData();
-  formData.append("nombre", document.getElementById("title").value);
-  formData.append("porciones", porciones); // porciones
-  formData.append("recetadesc", document.getElementById("description").value);
-  formData.append("thumbnails", file);
-  //formData.append("thumbnails", "sin img");
-  formData.append("stock", stock); // produccion maxima
-  formData.append("price", precio);
-  formData.append("categoria", document.getElementById("category").value);
-  //formData.append("status", document.getElementById("status").value);
-  formData.append("status", "T");
-  
-  
-  
-  try {
-    console.log("Estoy en el try del add", formData);
-    
-    // Aqui da un error cuando se hace el response con POST y Body como parametro.
-    // Si saco el throw new error se hace el socket.emit pero con datos indefinidos.
-    // En la lista actualizada de productos en el cliente se muestran los atributos como undefined.
-    // En el json se da de alta un registro con ID asignado correctamente y el mensaje de error.
-    // Si hago el POST por Postman el alta se hace correctamente.
-
-    // Envio response como en Postman 
-    //const response = await fetch("/", { DA ERROR 404
-    const response = await fetch("/api/products", {
-    
-      method: "POST",
-      body: formData,
-    });
-    //console.log("contenido de body:", body);
-    if (!response.ok) {
-      throw new Error("Error al agregar el producto con response y POST");
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const imageData = event.target.result;
+    const productData = {
+      title: document.getElementById("title").value,
+      portions: parseInt(document.getElementById("porciones").value),
+      description: document.getElementById("description").value,
+      stock: parseInt(document.getElementById("stock").value),
+      price: parseInt(document.getElementById("price").value),
+      category: document.getElementById("category").value,
+      code: document.getElementById("code").value,
+      status: true,
+      imageData: imageData  // Agregar la imagen como parte de los datos del producto
     };
+    console.log("antes de enviar emit:", productData);
+    socket.emit("add", productData);
     
-    // Si no error en response lo envio por socket
-    //const newProduct = await response.json();
-    const newProduct = response.json();
+    //socket.emit("add", productData, () => {
+    // Devolución de llamada después de que se complete la emisión con éxito
+    // Restablecer el formulario después de enviar los datos. Se reseteaban los datos antes del emit
+    // no funciona form.reset();
+    //});
 
-    console.log("resultado de newProduct:", newProduct);
-    
-    socket.emit("add", newProduct);
-    const cancelButtonContainer = document.getElementById(
-      "cancelButtonContainer"
-    );
-    cancelButtonContainer.style.display = "none";
-  } catch (error) {
-    console.error("Error al agregar el producto:", error);
-  }
+    // Crear una promesa para el emit del producto
+   /* No funciono const emitPromise = new Promise((resolve, reject) => {
+      // Emitir los datos del producto al servidor
+      socket.emit("add", productData, (response) => {
+        if (response.success) {
+          resolve(); // Resuelve la promesa si el servidor acepta los datos del producto
+        } else {
+          reject(response.error); // Rechaza la promesa si hay un error en el servidor
+        }
+      });
+    });*/
 
-  form.reset();
-  imagePreview.innerHTML = "";
-});*/
+   /* No funciono // Después de completar la promesa, restablecer el formulario
+    emitPromise.then(() => {
+      // Restablecer el formulario después de que se complete el emit del producto
+      form.reset();
+    }).catch((error) => {
+      console.error("Error al enviar datos del producto:", error);
+      // Puedes agregar aquí el manejo de errores si es necesario
+    });*/
 
+  };
+  reader.readAsDataURL(imageFile);
+
+});
+
+
+
+
+
+
+
+// HAcia abajo ya estaba
 function previewImage() {
   const fileInput = document.getElementById("thumbnails");
   const imagePreview = document.getElementById("imagePreview");
@@ -213,3 +232,5 @@ function showCancelButton() {
   );
   cancelButtonContainer.style.display = "block";
 }
+
+

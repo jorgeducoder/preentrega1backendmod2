@@ -8,8 +8,10 @@ import __dirname from "./utils.js";
 import router from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
+import msRouter from "./routes/message.router.js";
+
 // lo utilizo en el socket import { ProductManager } from "./service/ProductManager.js";
-import Sockets from "./sockets.js";
+import Socketsgpt from "./socketsgpt.js";
 import mongoose from "mongoose";
 
 const app = express();
@@ -48,15 +50,17 @@ app.set("view engine", "handlebars");
 app.use("/api/products", router);
 app.use("/api/carts", cartsRouter);
 app.use("/products", viewsRouter);
+app.use("/message", msRouter);
 
-
-// Start servidor
+// Se inicia un servidor HTTP
 const httpServer = app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
 
 
-// Set up WebSocket server
+// Se inicia un servidor websocket en io
 const io = new Server(httpServer);
-Sockets(io);
+// Se llama a Sockets.js con el servidor websocket definido como parametro 
+// para ejecutar las acciones correspondientes. Sockets.js se importo al inicio.
+Socketsgpt(io);
 

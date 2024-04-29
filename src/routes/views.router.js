@@ -2,15 +2,17 @@ import { Router } from "express";
 //import { ProductManager } from "../dao/productManager.js";
 
 import { ProductManagerMdb } from "../dao/productManagerMdb.js";
+import { messageManagerMdb } from "../dao/messageManagerMdb.js";
 
 
 const router = Router();
 //const products = new ProductManager("./src/saborescaseros.json");
 const products = new ProductManagerMdb();
+const messages = new messageManagerMdb();
 
 
 // renderizo  lista de productos existentes desde HTML en /products
-// Obtiene los productos de la base en esta ruta y los renderiza con home.handlebarse.
+// Obtiene los productos de la base en esta ruta y los renderiza con home.handlebars.
 // No pasa por el socket por eso en public no precisa un js y utiliza el mismo css que para realtimeproducts
 
 router.get("/", async(req, res) => {
@@ -21,7 +23,7 @@ router.get("/", async(req, res) => {
     res.render("home",
       {
         title: "Productos desde HTML",
-        style: "realtimeproducts.css",
+        style: "productList.css",
         productList
       }
     );
@@ -49,7 +51,21 @@ router.get("/realtimeproducts", async (req, res) => {    // en endpoint products
   }
 });
 
-
+router.get("/chat", async (req, res) => {    
+  try {
+    const chatList = await messages.getMessages();
+    // renderizo la handlebars definida
+    res.render("chatHandlebar",
+      {
+        title: "Chat por socket",
+        style: "chat.css",
+        chatList
+      }
+    );
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
 
 
 export default router;

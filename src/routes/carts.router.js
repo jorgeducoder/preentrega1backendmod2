@@ -5,16 +5,16 @@ import { ProductManagerMdb } from "../dao/productManagerMdb.js";
 // Define los nuevos objetos CM y PM con los metodos y datos del json
 const CM = new cartManagerMdb;
 
-// La nueva clase PM en principio la necesito para ver si el producto que se ingresa para incorporar la carrito esta en la clase productos
+// La nueva clase PM en principio la necesito para ver si el producto que se ingresa
+// para incorporar al carrito esta en la clase productos
 const PM = new ProductManagerMdb;
  
 // Define los metodos para el router de usuarios
 const cartsRouter = Router();
 
 cartsRouter.post("/", async (req, res) => {
-    //Desde la raiz se agrega un carrito nuevo
+    //Desde la raiz mas api/carts/ se agrega un carrito nuevo sin productos. Ruta definida en app.js
     try {
-
         const response = await CM.addCart();
         res.json(response);
     } catch (error) {
@@ -39,7 +39,7 @@ cartsRouter.get("/", async (req, res) => {
 });
 
 cartsRouter.get('/:cid', async (req, res) => {
-    // Dado el id de un carrito lo muestra
+    // Dado el id de un carrito lo muestra con sus productos
     let cartId = req.params.cid;
     const cart = await CM.getcartProducts(cartId);
     res.send({ cart });

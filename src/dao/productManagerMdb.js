@@ -3,9 +3,9 @@ import productModel from "./models/productModel.js";
 
 class ProductManagerMdb {
 
-    async addProduct(producto) {
+    async addProduct(productData) {
 
-        try {
+       /* try {
             console.log("Producto que llega a addProduct en PMMdbjs: ", producto)
             // aca estaba el problema del undefined, le estaba pasando un objeto de la clase products
             //const result = await productModel.create({ producto });
@@ -16,7 +16,31 @@ class ProductManagerMdb {
             console.error(error.message);
             throw new error("Error al crear el producto")
 
-        }
+        }*/
+
+        try {
+            // Crear un nuevo producto con los datos recibidos y la imagen
+            const product = new productModel({
+              title: productData.title,
+              portions: productData.portions,
+              description: productData.description,
+              thumbnails: productData.imageData,  // Guarda los datos de la imagen en base 64
+              stock: productData.stock,
+              price: productData.price,
+              category: productData.category,
+              status: productData.status,
+              code: productData.code
+            });
+      
+            // Guardar el producto en la base de datos
+            await product.save();
+      
+            console.log('Producto guardado:', product);
+            // Puedes emitir un mensaje de confirmación de que el producto se ha guardado correctamente si lo deseas
+          } catch (error) {
+            console.error('Error al guardar el producto:', error);
+            // Puedes emitir un mensaje de error si ocurre un problema durante el proceso de guardado
+          }
     }
 
 

@@ -12,18 +12,6 @@ const PM = new ProductManagerMdb;
 // Define los metodos para el router de usuarios
 const cartsRouter = Router();
 
-cartsRouter.post("/", async (req, res) => {
-    //Desde la raiz mas api/carts/ se agrega un carrito nuevo sin productos. Ruta definida en app.js
-    try {
-        const response = await CM.addCart();
-        res.json(response);
-    } catch (error) {
-        res.send("Error al crear carrito")
-    }
-})
-
-
-
 
 cartsRouter.get("/", async (req, res) => {
     // Desde la raiz se obtienen todos los carritos
@@ -45,10 +33,19 @@ cartsRouter.get('/:cid', async (req, res) => {
     res.send({ cart });
 });
 
-
+cartsRouter.post("/", async (req, res) => {
+    //Desde la raiz mas api/carts/ se agrega un carrito nuevo sin productos. Ruta definida en app.js
+    try {
+        const response = await CM.addCart();
+        res.json(response);
+    } catch (error) {
+        res.send("Error al crear carrito")
+    }
+})
 
 cartsRouter.post("/:cid/productos/:pid", async (req, res) => {
-    // Dado un id de carrito y un producto lo agrega y si existe lo actuliza con la cantidad que se recibe en el body
+    // Dado un id de carrito y un producto lo agrega y si existe lo actuliza con la cantidad
+    // que se recibe en el body
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     console.log(cid, pid, quantity);
@@ -65,6 +62,14 @@ cartsRouter.post("/:cid/productos/:pid", async (req, res) => {
 
     res.status(201).send({ message: "Producto creado correctamente!" });
 });
+
+// FALTA AGREGAR DELETE DE CARRITO Y DELETE DE PRODUCTO EN CARRITO
+
+// FALTA DOS PUT:
+// DADO UN CARRITO ACTUAIZAR CON PRODUCTO DESDE EL BODY
+// DADO UN CARRITO Y PROUCTO ACTUALIZAR CON CANTIDAD DESDE EL BODY
+
+// AGREGAR TRY CATCH  CON SEND SUCCESS PAYLOAD
 
 
 export default cartsRouter;

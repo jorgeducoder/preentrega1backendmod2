@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const cartCollection = "carts";
 
 const cartSchema = new mongoose.Schema({
+    // products ya esta definido para el populate
     products: {
         type: [
             {
@@ -19,7 +20,8 @@ const cartSchema = new mongoose.Schema({
                 }
             }
         ],
-        // El array de products se genera vacio en el POST por lo que por defecto creo un array vacio en mi modelo
+        // El array de products se genera vacio en el POST por lo que por defecto creo un array vacio
+        // en mi modelo
         default: []
     }
 });

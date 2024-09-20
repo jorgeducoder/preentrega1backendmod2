@@ -46,7 +46,7 @@ app.set("view engine", "handlebars");
 
 // routers - cambio a cartsRouter y dejo solo router porque asi se llaman los router en cart.router.js y product.router.js respectivamente
 // El use del viewsRouter lleva el path definido en el get de views.router.js
-// si el path de viewsRouter lo pongo en /products en el endpoint se ejecuta localhost:8080/products/localhost
+// si el path de viewsRouter lo pongo en /products en el endpoint se ejecuta localhost:8080/products
 app.use("/api/products", router);
 app.use("/api/carts", cartsRouter);
 app.use("/products", viewsRouter);

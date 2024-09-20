@@ -25,6 +25,7 @@ const cartSchema = new mongoose.Schema({
         default: []
     }
 });
-// por convencion a la coleccion carts se le asigna una variable cartCollection y se agrega que cree el modelo con la coleccion y el esquema
+// por convencion a la coleccion carts se le asigna una variable cartCollection y
+// se agrega que cree el modelo con la coleccion y el esquema
 export const cartModel = mongoose.model(cartCollection, cartSchema);
 export default cartModel;

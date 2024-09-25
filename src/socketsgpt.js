@@ -23,22 +23,13 @@ export default (io) => {
     emitProducts(socket);
     // Publicaa los mensajes tambien. Si lo saco el nuevo cliente ve los mensajes cuando se identifica
     // y escribe un mensaje. Que es lo correcto.
-    //emitMessages(socket);
+   // emitMessages(socket);
 
 
     // En el endpoint realtimeproducts a traves del viewsrouter correspondiente
     // recibe los emit del add o el delete
     
-    /* Cambio porque no se hace el reset del formulario
-    socket.on("add", async (product) => {
-
-      console.log("Producto a agregar en socket:", product);
-      await addProductAndEmit(product);
-      
-
-    });*/
-
-    socket.on("add", async (product) => {
+       socket.on("add", async (product) => {
       try {
         // Guardar el producto en la base de datos
         await addProductAndEmit(product);
@@ -60,7 +51,7 @@ export default (io) => {
       
     });
 
-    socket.on("message", handleMessage); // Escucha solo los mensajes de chat y da error sin crashear cuando emito realtime...
+    socket.on("message", handleMessage); // Escucha solo los mensajes de chat y da error sin crashear cuando luego emito realtime... 
     
   }
 
@@ -82,11 +73,13 @@ export default (io) => {
     emitProducts(io);
   }
 
-  async function emitMessages(socket) { // No la ejecuta porque saco el emit de los mensajes al principio.
+  async function emitMessages(socket) { // Si saco el emit de los mensajes en linea 26 no ejecuta la funcion en ese momento.
     const messageList = await messageManager.getMessages();
     socket.emit("messagesLogs", messageList);
   }
   // Se saca la funcion flecha y se llama desde socket.on(message)
+
+  
   // Da error Type error porque lo ejecuta el socket de realtime,
    
   async function handleMessage(data) {

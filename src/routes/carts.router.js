@@ -9,7 +9,7 @@ const CM = new cartManagerMdb;
 // para incorporar al carrito esta en la clase productos
 const PM = new ProductManagerMdb;
  
-// Define los metodos para el router de usuarios
+
 const cartsRouter = Router();
 
 
@@ -26,12 +26,19 @@ cartsRouter.get("/", async (req, res) => {
     res.send(carts);
 });
 
+
 cartsRouter.get('/:cid', async (req, res) => {
-    // Dado el id de un carrito lo muestra con sus productos
+    // Dado el id de un carrito lo muestra con sus productos utiizando populate
     let cartId = req.params.cid;
     const cart = await CM.getcartProducts(cartId);
+
+    if (cart.error) {
+        return res.status(404).send({ error: cart.error });
+    }
+
     res.send({ cart });
 });
+
 
 cartsRouter.post("/", async (req, res) => {
     //Desde la raiz mas api/carts/ se agrega un carrito nuevo sin productos. Ruta definida en app.js
@@ -43,27 +50,95 @@ cartsRouter.post("/", async (req, res) => {
     }
 })
 
-cartsRouter.post("/:cid/productos/:pid", async (req, res) => {
-    // Dado un id de carrito y un producto lo agrega y si existe lo actuliza con la cantidad
-    // que se recibe en el body
+
+
+
+cartsRouter.put("/:cid/productos/:pid", async (req, res) => {
     const { cid, pid } = req.params;
-    const { quantity } = req.body;
-    console.log(cid, pid, quantity);
-    if (!cid || !pid || !quantity) 
+    let { quantity } = req.body;
+    
+    if (!quantity) {
+        quantity = 1 } 
 
-        // Permite crear un carrito con la cantidad del body
+    if (!cid || !pid || !quantity) {
         return res.status(400).send({ error: "Faltan datos para crear o agregar al carrito" });
+    }
 
-    const product = await PM.getProductbyId(pid)
-    if (!product)
-        return res.status(404).send({ error: "Producto no existe" });
+    try {
+        // Verificar si el producto existe
+        const resultp = await PM.getProductbyId(pid);
+       
+        if (resultp.error) {
+            return res.status(404).send({ error: "Producto no existe" });
+        }
 
-    await CM.addproductCart(cid, pid, quantity);
+        // Intentar agregar o actualizar el producto en el carrito
+        const result = await CM.addproductCart(cid, pid, quantity);
 
-    res.status(201).send({ message: "Producto creado correctamente!" });
+        // Verificar si ocurrió un error en addproductCart
+        
+        if (result.error) {
+            
+            return res.status(400).send({ error: result.error });
+        }
+
+        // Responder según el resultado exitoso
+        res.status(201).send({ message: result.message });
+    } catch (error) {
+        // Manejar cualquier error inesperado
+        console.error(error);
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
 });
 
-// FALTA AGREGAR DELETE DE CARRITO Y DELETE DE PRODUCTO EN CARRITO
+
+cartsRouter.delete("/:cid/productos/:pid", async (req, res) => {
+    
+    // elimina un producto del carrito
+    
+    const { cid, pid } = req.params;
+    
+    if (!cid || !pid ) {
+        return res.status(400).send({ error: "Faltan datos para crear o agregar al carrito" });
+    }
+
+    try {
+        // Llamar al método para eliminar el producto del carrito
+        const result = await CM.deleteProductFromCart(cid, pid);
+
+        if (!result.success) {
+            return res.status(404).send({ error: result.error });
+        }
+
+        res.status(200).send({ message: result.message });
+    } catch (error) {
+        console.error("Error en el servidor:", error);
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+});
+
+cartsRouter.delete("/:cid", async (req, res) => {
+   
+    // Elimina carrito y sus productos
+   
+    const { cid } = req.params;
+
+    try {
+        // Llamar al método para eliminar el carrito
+        const result = await CM.deleteCartById(cid);
+
+        if (!result.success) {
+            return res.status(404).send({ error: result.error });
+        }
+
+        res.status(200).send({ message: result.message });
+    } catch (error) {
+        console.error("Error en el servidor:", error);
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+});
+
+
 
 // FALTA DOS PUT:
 // DADO UN CARRITO ACTUAIZAR CON PRODUCTO DESDE EL BODY

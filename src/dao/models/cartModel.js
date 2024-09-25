@@ -7,7 +7,7 @@ const cartSchema = new mongoose.Schema({
     products: {
         type: [
             {
-                product: {
+                _id: {
                     // El tipo del ID generado por Mongo
                     type: mongoose.Schema.ObjectId,
                     // Ponemos la referencia al objeto products
@@ -15,8 +15,7 @@ const cartSchema = new mongoose.Schema({
                 },
                 quantity: {
                     type: Number,
-                    // Lo inicializa en uno, yo lo saco porque el add lo hago ya con una cantidad, lo creo yo
-                    //default: 1
+                    default: 1
                 }
             }
         ],

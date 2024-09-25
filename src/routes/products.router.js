@@ -1,5 +1,5 @@
 // Aqui hay que hacer el post y el delete desde websocket, y los demas metodos probar que se hagan con Postman.
-// Seguramente luego para el carrito lo mismo
+// Luego para el carrito lo mismo
 
 
 import { Router } from "express";
@@ -39,21 +39,7 @@ router.get('/:pid', async (req, res) => {
 });
 
 
-/*router.post("/", async (req, res) => {
-    const { nombre, porciones, recetadesc, img, maxprod, precio, categoria, status } = req.body;
-    console.log("Body:", req.body);
-    console.log(nombre, porciones, recetadesc, img, maxprod, precio, categoria, status );
-    if (!nombre || !porciones || !recetadesc || !img || !maxprod || !precio || !categoria || !status)
-     
-    return res.status(400).send({error: "Faltan datos para agregar al producto!"});
-
-    //res.send( await PM.addProduct(req.body)); da error en el header pero devuelve codigo 200 idem el update
-     await PM.addProduct(req.body);
-
-    res.status(201).send({message: "Producto creado correctamente!"});
-});*/
-
-// Nuevo POST Lucia. recibe en uploader la/s imagenes
+// Nuevo POST  recibe en uploader la/s imagenes
 
 
 router.post("/", uploader.single("img"), async (req, res) => {

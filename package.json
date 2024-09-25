@@ -2,7 +2,7 @@
   "name": "websocket-desafio-4",
   "type": "module",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cosas que hace este proyecto:",
   "main": "app.js",
   "scripts": {
     "start": "nodemon src/app.js",
@@ -15,6 +15,7 @@
     "express": "^4.18.3",
     "express-handlebars": "^7.1.2",
     "mongoose": "^8.3.0",
+    "mongoose-paginate-v2": "^1.8.3",
     "multer": "^1.4.5-lts.1",
     "socket.io": "^4.7.4"
   }

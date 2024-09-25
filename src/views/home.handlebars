@@ -53,6 +53,23 @@
       </table>
 
     </div>
+    
+<!-- Botones de paginación -->
+    <div class="pagination-buttons">
+      <!-- Botón de página anterior -->
+      {{#if hasPrevPage}}
+        <a href="/products?page={{prevPage}}&limit={{limit}}" class="btn btn-primary">Página anterior</a>
+      {{else}}
+        <button class="btn btn-primary" disabled>Página anterior</button>
+      {{/if}}
+
+      <!-- Botón de página siguiente -->
+      {{#if hasNextPage}}
+        <a href="/products?page={{nextPage}}&limit={{limit}}" class="btn btn-primary">Página siguiente</a>
+      {{else}}
+        <button class="btn btn-primary" disabled>Página siguiente</button>
+      {{/if}}
+    </div>
 
   </div>
 </body>

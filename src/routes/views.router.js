@@ -15,7 +15,7 @@ const messages = new messageManagerMdb();
 // Obtiene los productos de la base en esta ruta y los renderiza con home.handlebars.
 // No pasa por el socket por eso en public no precisa un js y utiliza el mismo css que para realtimeproducts
 
-router.get("/", async(req, res) => {
+/*router.get("/", async(req, res) => {
   // renderizo la handlebars definida  
   try {
     const productList = await products.getProduct();
@@ -31,7 +31,43 @@ router.get("/", async(req, res) => {
   } catch (error) {
     res.status(500).send(error.message);
   }
+});*/
+
+router.get("/", async (req, res) => {
+  const { limit, page, sort, search } = req.query;
+
+  // Crear el filtro de búsqueda en función del parámetro "search"
+  let query = {};
+  if (search) {
+      // Por ejemplo, buscar productos cuyo nombre coincida con el parámetro "search"
+      query = { name: { $regex: search, $options: 'i' } }; // Búsqueda insensible a mayúsculas
+  }
+console.log("Estos son los parametros en views.router  ", limit, page, sort, search)
+  try {
+      const productList = await products.getProduct({ 
+          limit: parseInt(limit) || 10, 
+          page: parseInt(page) || 1, 
+          sort: sort || 'none', 
+          query // Pasar el filtro de búsqueda
+      });
+      
+      //res.send(products);
+      // renderizo la handlebars definida
+    
+         
+     res.render("home",
+      {
+        title: "Productos desde HTML",
+        style: "productList.css",
+        productList
+      }
+    );
+  } catch (error) {
+      res.status(500).send({ error: 'Error al obtener productos' });
+  }
 });
+
+
 
 // renderizo form y lista de productos actualizada desde socket
 

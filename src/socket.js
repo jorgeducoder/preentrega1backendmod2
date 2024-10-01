@@ -4,7 +4,7 @@
 //import ProductManager from "./dao/productManager.js";
 // Cambio el import al de la DB y cambio en el views para que realtimeproducts vea los de la base 
 import { ProductManagerMdb } from "./dao/productManagerMdb.js";
-import { messageManagerMdb } from "./dao/messageManagerMdb.js";
+
 
 //La sentencia export default (io) => {  exporta 
 // la función desde el archivo sockets.js
@@ -12,7 +12,7 @@ import { messageManagerMdb } from "./dao/messageManagerMdb.js";
 
 export default (io) => {
   const productManager = new ProductManagerMdb();
-  const messageManager = new messageManagerMdb();
+  
 
   //  Maneja la conexion y cuando un cliente se conecta al servidor se llama a la funcion handleConnection)
   io.on("connection", handleConnection);
@@ -51,7 +51,7 @@ export default (io) => {
       
     });
 
-    socket.on("message", handleMessage); // Escucha solo los mensajes de chat y da error sin crashear cuando luego emito realtime... 
+    
     
   }
 
@@ -73,24 +73,5 @@ export default (io) => {
     emitProducts(io);
   }
 
-  async function emitMessages(socket) { // Si saco el emit de los mensajes en linea 26 no ejecuta la funcion en ese momento.
-    const messageList = await messageManager.getMessages();
-    socket.emit("messagesLogs", messageList);
-  }
-  // Se saca la funcion flecha y se llama desde socket.on(message)
-
-  
-  // Da error Type error porque lo ejecuta el socket de realtime,
-   
-  async function handleMessage(data) {
-    console.log(`Mensaje en socket: ${data.message}`);
-    try {
-      await messageManager.addMessage(data);
-      const messages = await messageManager.getMessages();
-      io.emit("messagesLogs", messages);
-    } catch (error) {
-      console.error("Error al agregar el mensaje:", error);
-      socket.emit("statuserror", "Error al procesar el mensaje");
-    }
-  }
+    
 }

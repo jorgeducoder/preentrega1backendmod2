@@ -31,8 +31,8 @@ class ProductManagerMdb {
     }
 
 
-
-   /* async getProduct() {
+/*getproduct inicial sin params 
+    async getProduct() {
 
         try {
             return await productModel.find().lean(); // se agrega lean() porque mongo devuelve un objeto mongo 
@@ -62,7 +62,8 @@ class ProductManagerMdb {
             }
     
             // Ejecutar la consulta con el filtro query y las opciones de paginación/ordenamiento
-            return await productModel.find(query, null, queryOptions).lean();
+           //return await productModel.paginate({query}, queryOptions);
+           return await productModel.find(query, null, queryOptions).lean();
         } catch (error) {
             console.error(error.message);
             throw new Error("Error al buscar los productos");

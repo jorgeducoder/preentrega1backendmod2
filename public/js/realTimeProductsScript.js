@@ -36,25 +36,7 @@ socket.on("products", (data) => {
   showProducts(data);
 });
 
-/*function createTableRow(product) { ANTERIOR A GPT
-  
-  // Funcion que crea la tabla con las lineas de cada producto. El cabezal esta definido en el handlebar
-  
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${product._id}</td>
-    <td class="text-nowrap">${product.title}</td>
-    <td>${product.description}</td>
-    <td class="text-nowrap">$ ${product.price}</td>
-    <td>${product.category}</td>
-    <td>${product.stock}</td>
-    <td>${product.status}</td>
-    <td>${product.code}</td>
-    <td><img src="${product.thumbnails}" alt="Thumbnail" class="thumbnail" style="width: 75px;"></td>
-    <td><button class="btn btn-effect btn-dark btn-jif bg-black" onClick="deleteProduct('${product._id}')">Eliminar</button></td>
-  `;
-  return row;
-}*/
+
 
 function createTableRow(product) {
   const row = document.createElement("tr");
@@ -87,34 +69,6 @@ function deleteProduct(productId) {
 
 
 
-/*form.addEventListener("submit", async (event) => { Antes de GPT
-  event.preventDefault();
-
- // const imageBase64 = event.target.result; El event da indefinido
-
-  const fileInput = document.getElementById("thumbnails");
-  const file = fileInput.files[0];// no esta en gpt
-
-  const productData = {
-    title: document.getElementById("title").value,
-    portions: parseInt(document.getElementById("porciones").value),
-    description: document.getElementById("description").value,
-    thumbnails: file,
-    //thumbnails: document.getElementById("thumbnails"),
-    stock: parseInt(document.getElementById("stock").value),
-    price: parseInt(document.getElementById("price").value),
-    category: document.getElementById("category").value,
-    code: document.getElementById("code").value,
-    status: true
-  };
-  console.log("antes de enviar emit:", productData)
-  socket.emit("add", productData);
-  form.reset();
-  imagePreview.innerHTML = "";
-});*/
-// HACIA ARRIBA YA ESTABA
-
-
 // Agregar un event listener para el evento "addProductSuccess" emitido desde el servidor
 socket.on("addProductSuccess", () => {
   // Restablecer el formulario después de que se confirme que el producto se ha agregado correctamente
@@ -144,42 +98,11 @@ form.addEventListener("submit", async (event) => {
     console.log("antes de enviar emit:", productData);
     socket.emit("add", productData);
     
-    //socket.emit("add", productData, () => {
-    // Devolución de llamada después de que se complete la emisión con éxito
-    // Restablecer el formulario después de enviar los datos. Se reseteaban los datos antes del emit
-    // no funciona form.reset();
-    //});
-
-    // Crear una promesa para el emit del producto
-   /* No funciono const emitPromise = new Promise((resolve, reject) => {
-      // Emitir los datos del producto al servidor
-      socket.emit("add", productData, (response) => {
-        if (response.success) {
-          resolve(); // Resuelve la promesa si el servidor acepta los datos del producto
-        } else {
-          reject(response.error); // Rechaza la promesa si hay un error en el servidor
-        }
-      });
-    });*/
-
-   /* No funciono // Después de completar la promesa, restablecer el formulario
-    emitPromise.then(() => {
-      // Restablecer el formulario después de que se complete el emit del producto
-      form.reset();
-    }).catch((error) => {
-      console.error("Error al enviar datos del producto:", error);
-      // Puedes agregar aquí el manejo de errores si es necesario
-    });*/
 
   };
   reader.readAsDataURL(imageFile);
 
 });
-
-
-
-
-
 
 
 // HAcia abajo ya estaba

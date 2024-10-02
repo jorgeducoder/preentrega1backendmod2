@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
       
       //res.send(products);
       // renderizo la handlebars definida
-      console.log("Esto devuelve el paginate o el find en views.router", productList);
+      console.log("Esto devuelve el paginate o el find en views.router", productList.title);
      
        res.render("home",
       {

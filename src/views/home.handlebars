@@ -46,6 +46,13 @@
               <!--<img src="{{this.thumbnails}}" alt="Imagen del producto">-->
             </td>
 
+            <td>
+            <!-- Botón para agregar al carrito -->
+            <form action="/api/carts/productos/{{this._id}}" method="POST">
+              <button type="submit" class="btn btn-success">Agregar al carrito</button>
+            </form>
+            </td>
+
           </tr>
           {{/each}}
         </tbody>

@@ -53,6 +53,58 @@ cartsRouter.post("/", async (req, res) => {
 
 
 
+cartsRouter.post("/productos/:pid", async (req, res) => {
+    
+    //Desde la raiz mas api/carts/ se agrega un producto dado a un carrito nuevo. usado desde HB. Ruta definida en app.js
+    
+    const { pid } = req.params;
+    let { quantity } = req.body;
+    
+    if (!quantity) {
+        quantity = 1 } 
+
+    
+    if (!pid || !quantity) {
+        return res.status(400).send({ error: "Faltan datos para crear o agregar al carrito" });
+    }
+
+    try {
+
+        // Verificar si el producto existe
+        const resultp = await PM.getProductbyId(pid);
+       
+        if (resultp.error) {
+            return res.status(404).send({ error: "Producto no existe" });
+        }
+
+        // Agregar carrito vacio
+        const resultc = await CM.addCart();
+        if (resultc.errors) {
+            return res.status(404).send({ errors: "Error al crear nuevo carrito en cartsRouter.put" });
+        }
+        let cid = resultc._id;
+
+        // Intentar agregar o actualizar el producto en el carrito
+        const result = await CM.addproductCart(cid, pid, quantity);
+
+        // Verificar si ocurrió un error en addproductCart
+        
+        if (result.error) {
+            
+            return res.status(400).send({ error: result.error });
+        }
+
+        // Responder según el resultado exitoso
+        res.status(201).send({ message: result.message });
+    } catch (error) {
+        // Manejar cualquier error inesperado
+        console.error(error);
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+});
+
+
+
 cartsRouter.put("/:cid/productos/:pid", async (req, res) => {
     const { cid, pid } = req.params;
     let { quantity } = req.body;

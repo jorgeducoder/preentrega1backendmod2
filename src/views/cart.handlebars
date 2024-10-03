@@ -1,0 +1,65 @@
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/css/productIncart.css"> <!-- Asegúrate de que esta ruta apunte a tu archivo CSS -->
+</head>
+
+
+
+<body>
+  <div class="mx-auto px-4">
+    <div>
+      <h1 class="text-uppercase">{{title}}</h1>
+    </div>
+
+    <div class="form-holder">
+      <table class="table-items">
+        <thead>
+          <tr class="text-uppercase">
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Categoria</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody id="table-body">
+          {{#each products}}
+          <tr>
+            <td>{{this.title}}</td>
+            <td>{{this.description}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.category}}</td>
+            <td>{{this.quantity}}</td>
+            <td>{{this.subtotal}}</td>
+
+          <!--  <td>{{calcSubtotal this.quantity this.productId.price}}</td>  Uso helper para calcular subtotal -->
+
+            <!-- Botón para eliminar producto del carrito 
+            <td>
+              <form action="/cart/{{cartId}}/remove/{{this.productId._id}}" method="POST">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+              </form>
+            </td>-->
+
+            <td>
+                <form action="/cart/{{cartId}}/remove/{{this.productId}}" method="POST">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </td>
+
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+      <!-- Total general del carrito -->
+      <!--<h3>Total: {{calcTotal products}}</h3>-->
+    </div>
+  </div>
+</body>

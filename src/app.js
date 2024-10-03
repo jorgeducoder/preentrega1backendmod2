@@ -4,6 +4,9 @@ import { Server } from "socket.io";
 
 import __dirname from "./utils.js";
 
+import './utils/handlebarsHelper.js';  // Importar los helpers de Handlebars
+
+
 // importo los routers
 import router from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -42,6 +45,8 @@ app.use(express.static('public')); // esta en otros
 app.engine("handlebars", handlebars.engine());
 app.set("views", `${__dirname}/views`);
 app.set("view engine", "handlebars");
+
+
 
 
 // routers - cambio a cartsRouter y dejo solo router porque asi se llaman los router en cart.router.js y product.router.js respectivamente

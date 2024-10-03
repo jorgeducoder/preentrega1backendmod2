@@ -37,6 +37,7 @@ cartsRouter.get('/:cid', async (req, res) => {
     }
 
     res.send({ cart });
+    
 });
 
 
@@ -151,7 +152,7 @@ cartsRouter.delete("/:cid/productos/:pid", async (req, res) => {
     const { cid, pid } = req.params;
     
     if (!cid || !pid ) {
-        return res.status(400).send({ error: "Faltan datos para crear o agregar al carrito" });
+        return res.status(400).send({ error: "Faltan datos para eliminar el producto" });
     }
 
     try {
@@ -189,14 +190,6 @@ cartsRouter.delete("/:cid", async (req, res) => {
         res.status(500).send({ error: "Error interno del servidor." });
     }
 });
-
-
-
-// FALTA DOS PUT:
-// DADO UN CARRITO ACTUAIZAR CON PRODUCTO DESDE EL BODY
-// DADO UN CARRITO Y PROUCTO ACTUALIZAR CON CANTIDAD DESDE EL BODY
-
-// AGREGAR TRY CATCH  CON SEND SUCCESS PAYLOAD
 
 
 export default cartsRouter;

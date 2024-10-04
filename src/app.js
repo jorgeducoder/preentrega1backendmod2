@@ -42,7 +42,15 @@ app.use(express.static('public')); // esta en otros
 
 // handlebars config
 
-app.engine("handlebars", handlebars.engine());
+// Configuración de Handlebars con las opciones de seguridad desactivadas, agregada por error HB al renderizar
+app.engine("handlebars", handlebars.engine({
+  runtimeOptions: {
+      allowProtoPropertiesByDefault: true,  // Permitir acceso a propiedades de prototipo
+      allowProtoMethodsByDefault: true      // Permitir acceso a métodos de prototipo
+  }
+}));
+
+//app.engine("handlebars", handlebars.engine());
 app.set("views", `${__dirname}/views`);
 app.set("view engine", "handlebars");
 

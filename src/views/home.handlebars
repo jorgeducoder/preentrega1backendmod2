@@ -61,25 +61,29 @@
 
     </div>
     
-<!-- Botones de paginación -->
+
+    <!--Botones de paginación -->
     <div class="pagination-buttons">
-      <!-- Botón de página anterior -->
       {{#if hasPrevPage}}
-        <a href="/products?page={{prevPage}}&limit={{limit}}" class="btn btn-primary">Página anterior</a>
+        <a href="/products?page={{prevPage}}&limit={{limit}}&sort={{sort}}" class="btn btn-primary">Página anterior</a>
       {{else}}
         <button class="btn btn-primary" disabled>Página anterior</button>
       {{/if}}
 
-      <!-- Botón de página siguiente -->
       {{#if hasNextPage}}
-        <a href="/products?page={{nextPage}}&limit={{limit}}" class="btn btn-primary">Página siguiente</a>
+        <a href="/products?page={{nextPage}}&limit={{limit}}&sort={{sort}}" class="btn btn-primary">Página siguiente</a>
       {{else}}
         <button class="btn btn-primary" disabled>Página siguiente</button>
       {{/if}}
     </div>
 
+<!-- Barra de paginación con pagination.js no funciona
+    <div class="pagination-container">
+      <button id="prev-page" {{#unless hasPrevPage}}disabled{{/unless}}>Anterior</button>
+      <span id="current-page-info">Página {{page}} de {{totalPages}}</span>
+      <button id="next-page" {{#unless hasNextPage}}disabled{{/unless}}>Siguiente</button>
+    </div>
   </div>
+ <script src="/js/pagination.js"></script>-->
 </body>
-<!-- En estehandlebars no son ncesarios porque estoy trabajando por HTTP no por socket -->
-<!--<script src="/socket.io/socket.io.js"></script>-->
-<!--<script src="/js/index.js"></script>-->
+

@@ -4,52 +4,72 @@ import { Router } from "express";
 import { ProductManagerMdb } from "../dao/productManagerMdb.js";
 import { cartManagerMdb } from "../dao/cartManagerMdb.js";
 
+import productModel from '../dao/models/productModel.js';
+
 
 const router = Router();
 //const products = new ProductManager("./src/saborescaseros.json");
 const products = new ProductManagerMdb();
 const CM = new cartManagerMdb()
 
+
 router.get("/", async (req, res) => {
-  const { limit, page, sort, search } = req.query;
+  const { limit, page, sort, search, category } = req.query;
 
-  // Crear el filtro de búsqueda en función del parámetro "search"
+  // Crear el filtro de búsqueda en función del parámetro "search" y "category"
   let query = {};
-  if (search) {
-      // Por ejemplo, buscar productos cuyo nombre coincida con el parámetro "search"
-      query = { name: { $regex: search, $options: 'i' } }; // Búsqueda insensible a mayúsculas
-  }
-  console.log("Estos son los parametros en views.router  ", limit, page, sort, search)
-  try {
-      const productList = await products.getProduct({ 
-          limit: parseInt(limit) || 10, 
-          page: parseInt(page) || 1, 
-          sort: sort || 'none', 
-          query // Pasar el filtro de búsqueda
-      });
-      
-      //res.send(products);
-      // renderizo la handlebars definida
-      console.log("Esto devuelve el paginate o el find en views.router", productList.title);
-     
-       res.render("home",
-      {
-        title: "Productos desde HTML",
-        style: "productList.css",
-        productList
-      }
-    );
 
+  if (search) {
+    // Filtrar productos cuyo "title" coincida con el parámetro "search" (insensible a mayúsculas)
+    query.title = { $regex: search, $options: 'i' };
+  }
+
+  if (category) {
+    // Filtrar por categoría si se proporciona
+    query.category = category;
+  }
+
+  try {
+    // Configuración de paginación y ordenación
+    const options = {
+      limit: parseInt(limit) || 6, // Límite de productos por página
+      page: parseInt(page) || 1,    // Número de página
+      sort: {}                      // Ordenación
+    };
+
+    // Si se especifica un tipo de orden (por precio)
+    if (sort) {
+      if (sort === 'asc') {
+        options.sort.price = 1;  // Ordenar por precio ascendente
+      } else if (sort === 'desc') {
+        options.sort.price = -1; // Ordenar por precio descendente
+      }
+    }
+
+    // Ejecutar la consulta de paginación
+    const productList = await productModel.paginate(query, options);
     
+    // Renderizar la vista Handlebars con los datos paginados
+    res.render("home", {
+      title: "Productos desde HTML",
+      style: "productList.css",
+      productList: productList.docs,      // La lista de productos (array de docs)
+      totalPages: productList.totalPages, // Número total de páginas
+      currentPage: productList.page,      // Página actual
+      hasNextPage: productList.hasNextPage, // Indicador de página siguiente
+      hasPrevPage: productList.hasPrevPage, // Indicador de página anterior
+      nextPage: productList.nextPage,     // Siguiente página
+      prevPage: productList.prevPage,     // Página anterior
+    });
+
   } catch (error) {
-      res.status(500).send({ error: 'Error al obtener productos' });
+    res.status(500).send({ error: 'Error al obtener productos' });
   }
 });
 
 
-
 // renderizo form y lista de productos actualizada desde socket
-// Accedo a getProductRt porque no uso page, limit, etc.
+
 
 router.get("/realtimeproducts", async (req, res) => {    // en endpoint products/realtimeproducts muestra form para agregar y lista actualizada
   try {
@@ -88,12 +108,14 @@ router.get("/cart/:cartId", async (req, res) => {
       // Verificar que _id existe antes de acceder a sus propiedades
       if (product._id) {
         return {
+          productId: product._id,
           title: product._id.title,
           description: product._id.description,
           price: product._id.price,
           category: product._id.category,
           quantity: product.quantity,
           subtotal: product.quantity * product._id.price,
+          cartId: cart._id,
         };
       } else {
         // Si _id no existe, devolver un objeto vacío o con valores predeterminados

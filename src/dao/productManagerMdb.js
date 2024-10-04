@@ -31,7 +31,8 @@ class ProductManagerMdb {
     }
 
 
-/*getproduct inicial sin params 
+//getproduct inicial sin params 
+    
     async getProduct() {
 
         try {
@@ -41,38 +42,9 @@ class ProductManagerMdb {
             throw new Error("Error al buscar los productos");
 
         }
-    }*/
-
-    async getProduct({ limit = 10, page = 1, sort = 'none', query = {} } = {}) {
-        try {
-            // Crear opciones de paginación
-            
-            console.log("En getproduct  ", limit, page, sort, query)
-            
-            const queryOptions = {
-                skip: (page - 1) * limit, // Salto según la página
-                limit: parseInt(limit),   // Límite de productos por página
-            };
-    
-            // Si sort es asc o desc, aplicar el orden por precio
-            if (sort === 'asc') {
-                queryOptions.sort = { price: 1 };  // Orden ascendente por precio
-            } else if (sort === 'desc') {
-                queryOptions.sort = { price: -1 }; // Orden descendente por precio
-            }
-    
-            // Ejecutar la consulta con el filtro query y las opciones de paginación/ordenamiento
-           //return await productModel.paginate({query}, queryOptions);
-           return await productModel.find(query, null, queryOptions).lean();
-        } catch (error) {
-            console.error(error.message);
-            throw new Error("Error al buscar los productos");
-        }
     }
-    
 
-
-
+  
     async updateProduct(pid, producto) {
 
         try {
@@ -86,8 +58,7 @@ class ProductManagerMdb {
 
     }
 
-        
-
+     
     async getProductbyId(pid) {
         try {
             // Validar si el ID es un ObjectId válido

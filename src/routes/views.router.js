@@ -1,6 +1,8 @@
 import { Router } from "express";
 //import { ProductManager } from "../dao/productManager.js";
 
+import { auth } from './users.router.js';
+
 import { ProductManagerMdb } from "../dao/productManagerMdb.js";
 import { cartManagerMdb } from "../dao/cartManagerMdb.js";
 
@@ -140,5 +142,39 @@ router.get("/cart/:cartId", async (req, res) => {
     res.status(500).json({ message: 'Error al obtener los productos del carrito', error: error.message });
   }
 });
+
+// routers de usuarios register, login, profile
+
+// router para registrarse como usuario o github o google o ingresar si ya esta registrado
+router.get('/register', (req, res) => {
+  const data = {};
+  
+  // const template = 'register';
+  // res.status(200).render(template, data);
+  res.status(200).render('register', data);
+});
+
+
+// router para login manual (login), o passport login (pplogin), o jwt login (jwtlogin)
+router.get('/jwtlogin', (req, res) => {
+  const data = {
+      version: 'v3'
+  };
+  
+  res.status(200).render('login', data);
+});
+
+
+// ORIGINAL CON AUTH Y PASSPORT PERO DA ERROR AL QUERER VER EL PROFILE PORQUE NO RECONOCE USER
+// AI COMO ESTA MUESTRA LA VISTA DE PROFILE PERO userData vacio
+//router.get('/profile', auth, (req, res) => {
+router.get('/profile', auth, (req, res) => {
+    
+  const data = req.session.userData; // jwt y asi renderiza profile pero no muestra nombre de usuario y se puede perder la conexion al server
+  //const data = req.session.passport.user;
+  console.log(" El usuario: ", data);
+  res.status(200).render('profile', data);
+});
+
 
 export default router;

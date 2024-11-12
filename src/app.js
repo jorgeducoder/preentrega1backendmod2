@@ -17,7 +17,24 @@ import viewsRouter from "./routes/views.router.js";
 import Socket from "./socket.js";
 import mongoose from "mongoose";
 
+// Agregadas para usarlas con usuarios
+
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import FileStore from 'session-file-store';
+import passport from 'passport';
+
+import config from './config.js';
+
+import usersRouter from './routes/users.router.js';
+
+
+// hasta aqui
+
+
 const app = express();
+
+const fileStorage = FileStore(session); // para usuarios con session
 
 // MongoDB connect
 
@@ -55,15 +72,30 @@ app.set("views", `${__dirname}/views`);
 app.set("view engine", "handlebars");
 
 
+// para usuarios
+app.use(cookieParser(config.SECRET));
+app.use(session({
+    secret: config.SECRET,
+    resave: true,
+    saveUninitialized: true,
+    store: new fileStorage({ path: './sessions', ttl: 60, retries: 0 }),
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
 // routers - cambio a cartsRouter y dejo solo router porque asi se llaman los router en cart.router.js y product.router.js respectivamente
 // El use del viewsRouter lleva el path definido en el get de views.router.js
 // si el path de viewsRouter lo pongo en /products, en el endpoint se ejecuta localhost:8080/products
-app.use("/api/products", router);
-app.use("/api/carts", cartsRouter);
-app.use("/products", viewsRouter);
+app.use("/api/products", router); // endpoint donde se muestran los productos de la base con get, otras operaciones con postman
+app.use("/api/carts", cartsRouter); // idem que anterior
+app.use("/products", viewsRouter); // endpoint donde se muestra vista de /products  y /products/realtimeproducts productos en tiempo real
 
+
+app.use('/views', viewsRouter);
+app.use('/api/users', usersRouter);
+
+//app.use('/static', express.static(`${config.DIRNAME}/public`));  ya estaria mas arriba
 
 // Se inicia un servidor HTTP
 const httpServer = app.listen(port, () => {

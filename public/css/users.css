@@ -18,7 +18,7 @@
   }
   
   .container {
-    background-color: #f0f4f8; /* Tono suave de fondo en el contenedor */
+    background-color: #d7dadd; /* Tono suave de fondo en el contenedor */
     padding: 30px 25px;
     border-radius: 12px;
     width: 100%;
@@ -47,7 +47,7 @@
     margin-top: 5px;
     margin-bottom: 15px;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #cfc0c0;
     font-size: 16px;
     background-color: #ffffff;
   }
@@ -89,11 +89,11 @@
   }
   
   .github {
-    background-color: #333;
+    background-color: #575757;
   }
   
   .github:hover {
-    background-color: #222;
+    background-color: #3a3636;
   }
   
   .google {

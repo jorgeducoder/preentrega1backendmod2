@@ -96,13 +96,15 @@ router.delete('/:id?', auth, async (req, res) => {
     }
 });
 
+// Registro de un usuario nuevo
+
 router.post('/register', async (req, res) => {
     const { firstname, lastname, username, password } = req.body;
-    console.log("usuario: ", username);
+    console.log("usuario en register: ", username);
     if (firstname != '' && lastname != '' && username != '' && password != '') {
         const process = await manager.register({ firstName: firstname, lastName: lastname, email: username, password: password });
 
-        if (process) {
+        if (process) { 
             res.status(200).send({ error: null, data: 'Usuario registrado, bienvenido!' });
         } else {
             res.status(401).send({ error: 'Ya existe un usuario con ese email', data: [] });
@@ -154,6 +156,7 @@ router.get('/githubcallback', passport.authenticate('ghlogin', { failureRedirect
         if (err) return res.status(500).send({ error: 'Error al almacenar datos de sesión', data: [] });
 
         // res.status(200).send({ error: null, data: 'Usuario autenticado, sesión iniciada!' });
+       console.log("Datos de la sesion GH: ", req.session);
         res.redirect('/views/profile');
     });
 });

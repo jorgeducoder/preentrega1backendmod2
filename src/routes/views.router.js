@@ -148,31 +148,30 @@ router.get("/cart/:cartId", async (req, res) => {
 // router para registrarse como usuario o github o google o ingresar si ya esta registrado
 router.get('/register', (req, res) => {
   const data = {};
-  
-  // const template = 'register';
-  // res.status(200).render(template, data);
   res.status(200).render('register', data);
 });
 
 
 // router para login manual (login), o passport login (pplogin), o jwt login (jwtlogin)
+// /views/jwtlogin es el router y login es el hbs.
+
 router.get('/jwtlogin', (req, res) => {
   const data = {
       version: 'v3'
   };
+
   
   res.status(200).render('login', data);
 });
 
 
-// ORIGINAL CON AUTH Y PASSPORT PERO DA ERROR AL QUERER VER EL PROFILE PORQUE NO RECONOCE USER
-// AI COMO ESTA MUESTRA LA VISTA DE PROFILE PERO userData vacio
-//router.get('/profile', auth, (req, res) => {
+
 router.get('/profile', auth, (req, res) => {
     
-  const data = req.session.userData; // jwt y asi renderiza profile pero no muestra nombre de usuario y se puede perder la conexion al server
-  //const data = req.session.passport.user;
-  console.log(" El usuario: ", data);
+  //const data = req.session.userData;  jwt y sesion, con jwt no se muestra profile, se muestra token
+  // Si uso session los datos del usuario tendrian que estar en user y no en userData para usar dos cons data = .....
+  const data = req.session.passport.user;
+  console.log(" El usuario en profile: ", data);
   res.status(200).render('profile', data);
 });
 

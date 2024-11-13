@@ -5,6 +5,11 @@ import userManager from '../dao/users.manager.js';
 
 import config from '../config.js';
 
+import { cartManagerMdb } from '../dao/cartManagerMdb.js';
+
+const cartmanager = new cartManagerMdb();
+
+
 const manager = new userManager();
 const localStrategy = local.Strategy;
 
@@ -44,6 +49,7 @@ const initAuthStrategies = () => {
             try {
                 // Si passport llega hasta acá, es porque la autenticación en Github
                 // ha sido correcta, tendremos un profile disponible
+                console.log("Este es el profile de gh a pp: ", profile._json?.email);
                 const email = profile._json?.email || null;
                 
                 // Necesitamos que en el profile haya un email
@@ -56,13 +62,17 @@ const initAuthStrategies = () => {
                     const foundUser = await manager.getOne({ email: email });
 
                     if (!foundUser) {
+                        
+                        const emptyCart = await cartmanager.addCart({}); // crea un carrito vacío tmbn para GH
+                
                         const user = {
                             firstName: profile._json.name.split(' ')[0],
                             lastName: profile._json.name.split(' ')[1],
                             email: email,
-                            password: 'none'
+                            password: 'none',
+                            cart: emptyCart._id // asigna el ID del carrito al campo `cart`
                         }
-
+                        console.log("Este es el user nuevo de gh a pp: ", user);
                         const process = await manager.add(user);
 
                         return done(null, process);

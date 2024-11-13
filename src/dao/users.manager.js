@@ -1,7 +1,10 @@
 import userModel from './models/user.model.js';
 import { createHash, isValidPassword } from '../utils.js';
+import { cartManagerMdb } from './cartManagerMdb.js';
 
-// Manger de usuarios
+const cartmanager = new cartManagerMdb();
+
+// Manager de usuarios
 
 class UserManager {
     constructor() {}
@@ -23,7 +26,9 @@ class UserManager {
     };
 
     add = async (data) => {
+        
         try {
+            console.log("Viene de GH o manual con esta data: ", data);
             return await(userModel.create(data));
         } catch (err) {
             return err.message;
@@ -76,9 +81,18 @@ class UserManager {
             // Si findOne retorna un nulo, significa que no hay usuario con ese email,
             // entonces continuamos con el proceso de registro
             if (user === null) {
+                
+                // Crea un carrito vacío y guarda su ID en el usuario
+                
+                const emptyCart = await cartmanager.addCart({}); // crea un carrito vacío visto en after
+                
+                data.cart = emptyCart._id; // asigna el ID del carrito al campo `cart`
+                                
                 data.password = createHash(data.password);
+                
                 return await this.add(data);
             } else {
+                console.log("Se fue por el null de user!!");
                 return null;
             }
         } catch (err) {

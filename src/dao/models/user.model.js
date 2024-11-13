@@ -12,23 +12,8 @@ const schema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     age: { type: Number, required: false },
     password: { type: String, required: true },
-    cart:{
-        type: [
-            {
-                _id: {
-                    // El tipo del ID generado por Mongo
-                    type: mongoose.Schema.ObjectId,
-                    // Ponemos la referencia al objeto carts
-                    ref: "carts"
-                }
-                
-            }
-        ],
-        // El array de products se genera vacio en el POST por lo que por defecto creo un array vacio
-        // en mi modelo
-        default: []
-    },
-    role: { type: String, required: false }  // deberia ser requerido y debe ser enumerado con 3 roles
+    cart: { type:mongoose.Schema.Types.ObjectId, required: true, ref: "carts"},
+    role: { type: String, enum: ["ADMIN", "PREMIUM", "USER"], default: "USER" }  // deberia ser requerido y debe ser enumerado con 3 roles
 });
 
 const model = mongoose.model(collection, schema);
